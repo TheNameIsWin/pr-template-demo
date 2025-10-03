@@ -8,7 +8,6 @@ permissions:
   contents: read
   issues: write
   pull-requests: write
-  actions: read
 
 jobs:
   template-selector:
@@ -26,25 +25,25 @@ jobs:
           CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
           echo "Changed files: $CHANGED_FILES"
           
-          # Check if changes are in frontend folder (including subdirectories)
+          # Check if changes are in frontend folder
           if echo "$CHANGED_FILES" | grep -q "^frontend/"; then
             echo "template=frontend" >> $GITHUB_OUTPUT
-            echo "🎨 Frontend changes detected - using frontend template"
-          # Check if changes are in backend folder (including subdirectories)
+            echo "🎨 Frontend changes detected"
+          # Check if changes are in backend folder
           elif echo "$CHANGED_FILES" | grep -q "^backend/"; then
             echo "template=backend" >> $GITHUB_OUTPUT
-            echo "⚙️ Backend changes detected - using backend template"
+            echo "⚙️ Backend changes detected"
           # Check for frontend file extensions
           elif echo "$CHANGED_FILES" | grep -qE "\.(jsx?|tsx?|css|scss|html|vue|svelte)$"; then
             echo "template=frontend" >> $GITHUB_OUTPUT
-            echo "🎨 Frontend file types detected - using frontend template"
+            echo "🎨 Frontend file types detected"
           # Check for backend file extensions
           elif echo "$CHANGED_FILES" | grep -qE "\.(js|ts|py|java|go|php|rb)$"; then
             echo "template=backend" >> $GITHUB_OUTPUT
-            echo "⚙️ Backend file types detected - using backend template"
+            echo "⚙️ Backend file types detected"
           else
-            echo "template=default" >> $GITHUB_OUTPUT
-            echo "📝 Using default template"
+            echo "template=mixed" >> $GITHUB_OUTPUT
+            echo "📝 Mixed changes detected"
           fi
 
       - name: Update PR Description
@@ -52,13 +51,6 @@ jobs:
         with:
           script: |
             const template = '${{ steps.template.outputs.template }}';
-            
-            // Get current PR
-            const pr = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number
-            });
             
             let newDescription = '';
             let message = '';
@@ -98,15 +90,7 @@ jobs:
                 '## 📝 Additional Notes\n' +
                 'Any additional information or context about this PR.';
               
-              message = `🎨 **Frontend Template Applied!**
-              
-              Your PR description has been automatically updated with the **Frontend Template**.
-              
-              **What's included:**
-              - Frontend-specific checkboxes
-              - UI/UX requirements
-              - Browser compatibility testing
-              - Screenshot requirements`;
+              message = '🎨 **Frontend Template Applied!** Your PR description has been automatically updated with the Frontend Template.';
               
             } else if (template === 'backend') {
               newDescription = '# ⚙️ Backend Pull Request\n\n' +
@@ -152,15 +136,7 @@ jobs:
                 '## 📝 Additional Notes\n' +
                 'Any additional information or context about this PR.';
               
-              message = `⚙️ **Backend Template Applied!**
-              
-              Your PR description has been automatically updated with the **Backend Template**.
-              
-              **What's included:**
-              - Backend-specific checkboxes
-              - Database change tracking
-              - API documentation requirements
-              - Security checklist`;
+              message = '⚙️ **Backend Template Applied!** Your PR description has been automatically updated with the Backend Template.';
               
             } else {
               newDescription = '# 🚀 Mixed Changes Pull Request\n\n' +
@@ -207,17 +183,10 @@ jobs:
                 '## 📝 Additional Notes\n' +
                 'Any additional information or context about this PR.';
               
-              message = `📝 **Mixed Template Applied!**
-              
-              Your PR description has been automatically updated with the **Mixed Template**.
-              
-              **What's included:**
-              - Both frontend and backend sections
-              - Fill out the sections that apply to your changes`;
+              message = '📝 **Mixed Template Applied!** Your PR description has been automatically updated with the Mixed Template.';
             }
             
             try {
-<<<<<<< HEAD
               // Update PR description
               await github.rest.pulls.update({
                 owner: context.repo.owner,
@@ -229,46 +198,16 @@ jobs:
               console.log('✅ PR description updated successfully');
               
               // Add comment
-=======
->>>>>>> test1
               await github.rest.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 body: message
               });
-<<<<<<< HEAD
               
               console.log('✅ Comment added successfully');
               
             } catch (error) {
-              console.error('❌ Error updating PR:', error);
-              
-              // Try to add a comment about the error
-              try {
-                await github.rest.issues.createComment({
-                  issue_number: context.issue.number,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  body: `⚠️ **Template Update Failed**
-                  
-                  There was an issue updating the PR template automatically. Please manually select the appropriate template:
-                  
-                  - For frontend changes: Use the Frontend template
-                  - For backend changes: Use the Backend template
-                  
-                  Error: ${error.message}`
-                });
-              } catch (commentError) {
-                console.error('❌ Error adding comment:', commentError);
-              }
-              
-=======
-              console.log('✅ Comment added successfully');
-            } catch (error) {
-              console.error('❌ Error adding comment:', error);
-              console.log('Template detected:', template);
-              console.log('Message:', message);
->>>>>>> test1
+              console.error('❌ Error:', error);
               throw error;
             }
