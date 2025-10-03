@@ -1,4 +1,4 @@
-name: PR Template Selector
+name: Auto Template Selector
 
 on:
   pull_request:
@@ -6,68 +6,45 @@ on:
 
 permissions:
   contents: read
-  issues: write
   pull-requests: write
 
 jobs:
-  template-selector:
+  select-template:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Determine template
-        id: template
+      - name: Check changes
+        id: check
         run: |
-          # Get list of changed files
-          CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
-          echo "Changed files: $CHANGED_FILES"
-          
-          # Check if changes are in frontend folder
-          if echo "$CHANGED_FILES" | grep -q "^frontend/"; then
+          if git diff --name-only origin/main...HEAD | grep -q "^frontend/"; then
             echo "template=frontend" >> $GITHUB_OUTPUT
-            echo "🎨 Frontend changes detected"
-          # Check if changes are in backend folder
-          elif echo "$CHANGED_FILES" | grep -q "^backend/"; then
+          elif git diff --name-only origin/main...HEAD | grep -q "^backend/"; then
             echo "template=backend" >> $GITHUB_OUTPUT
-            echo "⚙️ Backend changes detected"
-          # Check for frontend file extensions
-          elif echo "$CHANGED_FILES" | grep -qE "\.(jsx?|tsx?|css|scss|html|vue|svelte)$"; then
-            echo "template=frontend" >> $GITHUB_OUTPUT
-            echo "🎨 Frontend file types detected"
-          # Check for backend file extensions
-          elif echo "$CHANGED_FILES" | grep -qE "\.(js|ts|py|java|go|php|rb)$"; then
-            echo "template=backend" >> $GITHUB_OUTPUT
-            echo "⚙️ Backend file types detected"
           else
-            echo "template=mixed" >> $GITHUB_OUTPUT
-            echo "📝 Mixed changes detected"
+            echo "template=default" >> $GITHUB_OUTPUT
           fi
 
-      - name: Update PR Description
+      - name: Update PR
         uses: actions/github-script@v7
         with:
           script: |
-            const template = '${{ steps.template.outputs.template }}';
+            const template = '${{ steps.check.outputs.template }}';
             
-            let newDescription = '';
-            let message = '';
+            let newBody = '';
             
             if (template === 'frontend') {
-              newDescription = '# 🎨 Frontend Pull Request\n\n' +
+              newBody = '# 🎨 Frontend Pull Request\n\n' +
                 '## 📋 Description\n' +
                 'Brief description of the frontend changes in this PR.\n\n' +
-                '---\n\n' +
                 '## 🎯 Type of Change\n' +
                 '- [ ] 🐛 Bug fix\n' +
                 '- [ ] ✨ New feature\n' +
                 '- [ ] 💄 UI/UX improvement\n' +
                 '- [ ] 🔧 Refactoring\n' +
                 '- [ ] 📱 Responsive design\n' +
-                '- [ ] ⚡ Performance optimization\n' +
-                '- [ ] 🧪 Testing\n\n' +
+                '- [ ] ⚡ Performance optimization\n\n' +
                 '## 🖼️ UI Changes\n' +
                 '- [ ] Screenshots added\n' +
                 '- [ ] Mobile responsive\n' +
@@ -90,13 +67,10 @@ jobs:
                 '## 📝 Additional Notes\n' +
                 'Any additional information or context about this PR.';
               
-              message = '🎨 **Frontend Template Applied!** Your PR description has been automatically updated with the Frontend Template.';
-              
             } else if (template === 'backend') {
-              newDescription = '# ⚙️ Backend Pull Request\n\n' +
+              newBody = '# ⚙️ Backend Pull Request\n\n' +
                 '## 📋 Description\n' +
                 'Brief description of the backend changes in this PR.\n\n' +
-                '---\n\n' +
                 '## 🎯 Type of Change\n' +
                 '- [ ] 🐛 Bug fix\n' +
                 '- [ ] ✨ New feature\n' +
@@ -104,8 +78,7 @@ jobs:
                 '- [ ] ⚡ Performance optimization\n' +
                 '- [ ] 🔒 Security improvement\n' +
                 '- [ ] 📊 Database changes\n' +
-                '- [ ] 🔌 API changes\n' +
-                '- [ ] 🧪 Testing\n\n' +
+                '- [ ] 🔌 API changes\n\n' +
                 '## 🗄️ Database Changes\n' +
                 '- [ ] Migration files added\n' +
                 '- [ ] Database schema updated\n' +
@@ -135,79 +108,13 @@ jobs:
                 'Closes #(issue number)\n\n' +
                 '## 📝 Additional Notes\n' +
                 'Any additional information or context about this PR.';
-              
-              message = '⚙️ **Backend Template Applied!** Your PR description has been automatically updated with the Backend Template.';
-              
-            } else {
-              newDescription = '# 🚀 Mixed Changes Pull Request\n\n' +
-                '## 📋 Description\n' +
-                'Brief description of the changes in this PR.\n\n' +
-                '---\n\n' +
-                '## 🎨 Frontend Changes\n' +
-                '*Fill this section if you have frontend changes*\n\n' +
-                '### 🎯 Type of Change\n' +
-                '- [ ] 🐛 Bug fix\n' +
-                '- [ ] ✨ New feature\n' +
-                '- [ ] 💄 UI/UX improvement\n' +
-                '- [ ] 🔧 Refactoring\n' +
-                '- [ ] 📱 Responsive design\n' +
-                '- [ ] ⚡ Performance optimization\n\n' +
-                '### 🖼️ UI Changes\n' +
-                '- [ ] Screenshots added\n' +
-                '- [ ] Mobile responsive\n' +
-                '- [ ] Cross-browser tested\n' +
-                '- [ ] Accessibility checked\n\n' +
-                '---\n\n' +
-                '## ⚙️ Backend Changes\n' +
-                '*Fill this section if you have backend changes*\n\n' +
-                '### 🎯 Type of Change\n' +
-                '- [ ] 🐛 Bug fix\n' +
-                '- [ ] ✨ New feature\n' +
-                '- [ ] 🔧 Refactoring\n' +
-                '- [ ] ⚡ Performance optimization\n' +
-                '- [ ] 🔒 Security improvement\n' +
-                '- [ ] 📊 Database changes\n' +
-                '- [ ] 🔌 API changes\n\n' +
-                '### 🗄️ Database Changes\n' +
-                '- [ ] Migration files added\n' +
-                '- [ ] Database schema updated\n' +
-                '- [ ] Data migration required\n' +
-                '- [ ] Rollback plan documented\n\n' +
-                '---\n\n' +
-                '## 🧪 Testing\n' +
-                '- [ ] Unit tests added/updated\n' +
-                '- [ ] Integration tests added/updated\n' +
-                '- [ ] Manual testing completed\n\n' +
-                '## 🔗 Related Issues\n' +
-                'Closes #(issue number)\n\n' +
-                '## 📝 Additional Notes\n' +
-                'Any additional information or context about this PR.';
-              
-              message = '📝 **Mixed Template Applied!** Your PR description has been automatically updated with the Mixed Template.';
             }
             
-            try {
-              // Update PR description
+            if (newBody) {
               await github.rest.pulls.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 pull_number: context.issue.number,
-                body: newDescription
+                body: newBody
               });
-              
-              console.log('✅ PR description updated successfully');
-              
-              // Add comment
-              await github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: message
-              });
-              
-              console.log('✅ Comment added successfully');
-              
-            } catch (error) {
-              console.error('❌ Error:', error);
-              throw error;
             }

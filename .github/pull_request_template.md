@@ -1,21 +1,13 @@
-# 🚀 Dynamic Pull Request Template
+# Pull Request
 
-> **📝 Instructions:** This template will be automatically customized based on your changes. Just fill out the sections that appear below.
-
-## 📋 Description
+## Description
 Brief description of the changes in this PR.
 
----
+## Changes
+- List what you changed
 
-<!-- DYNAMIC CONTENT WILL BE INSERTED HERE BY WORKFLOW -->
+## Testing
+- Steps to test this PR
 
-## 🧪 Testing
-- [ ] Unit tests added/updated
-- [ ] Integration tests added/updated
-- [ ] Manual testing completed
-
-## 🔗 Related Issues
+## Related Issues
 Closes #(issue number)
-
-## 📝 Additional Notes
-Any additional information or context about this PR.
