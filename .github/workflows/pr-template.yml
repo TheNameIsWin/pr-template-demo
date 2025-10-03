@@ -217,6 +217,7 @@ jobs:
             }
             
             try {
+<<<<<<< HEAD
               // Update PR description
               await github.rest.pulls.update({
                 owner: context.repo.owner,
@@ -228,12 +229,15 @@ jobs:
               console.log('✅ PR description updated successfully');
               
               // Add comment
+=======
+>>>>>>> test1
               await github.rest.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 body: message
               });
+<<<<<<< HEAD
               
               console.log('✅ Comment added successfully');
               
@@ -259,5 +263,12 @@ jobs:
                 console.error('❌ Error adding comment:', commentError);
               }
               
+=======
+              console.log('✅ Comment added successfully');
+            } catch (error) {
+              console.error('❌ Error adding comment:', error);
+              console.log('Template detected:', template);
+              console.log('Message:', message);
+>>>>>>> test1
               throw error;
             }
