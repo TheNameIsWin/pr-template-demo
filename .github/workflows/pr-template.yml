@@ -117,4 +117,7 @@ jobs:
                 pull_number: context.issue.number,
                 body: newBody
               });
+              console.log('✅ PR description updated with template:', template);
+            } else {
+              console.log('❌ No template found for:', template);
             }
