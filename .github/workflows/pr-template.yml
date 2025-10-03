@@ -4,66 +4,93 @@ on:
   pull_request:
     types: [opened, edited]
 
+permissions:
+  issues: write
+  pull-requests: write
+
 jobs:
   template-selector:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Determine template
         id: template
         run: |
-          # Check if changes are in frontend folder
-          if git diff --name-only origin/main...HEAD | grep -q "^frontend/"; then
+          # Get list of changed files
+          CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
+          echo "Changed files: $CHANGED_FILES"
+          
+          # Check if changes are in frontend folder (including subdirectories)
+          if echo "$CHANGED_FILES" | grep -q "^frontend/"; then
             echo "template=frontend" >> $GITHUB_OUTPUT
             echo "🎨 Frontend changes detected - using frontend template"
-          # Check if changes are in backend folder
-          elif git diff --name-only origin/main...HEAD | grep -q "^backend/"; then
+          # Check if changes are in backend folder (including subdirectories)
+          elif echo "$CHANGED_FILES" | grep -q "^backend/"; then
             echo "template=backend" >> $GITHUB_OUTPUT
             echo "⚙️ Backend changes detected - using backend template"
+          # Check for frontend file extensions
+          elif echo "$CHANGED_FILES" | grep -qE "\.(jsx?|tsx?|css|scss|html|vue|svelte)$"; then
+            echo "template=frontend" >> $GITHUB_OUTPUT
+            echo "🎨 Frontend file types detected - using frontend template"
+          # Check for backend file extensions
+          elif echo "$CHANGED_FILES" | grep -qE "\.(js|ts|py|java|go|php|rb)$"; then
+            echo "template=backend" >> $GITHUB_OUTPUT
+            echo "⚙️ Backend file types detected - using backend template"
           else
             echo "template=default" >> $GITHUB_OUTPUT
             echo "📝 Using default template"
           fi
 
       - name: Comment on PR
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const template = '${{ steps.template.outputs.template }}';
             let message = '';
             
             if (template === 'frontend') {
-              message = `🎨 **Frontend PR Detected!**
+              message = `🎨 **Frontend Changes Detected!**
               
-              This PR contains frontend changes. Please use the **Frontend PR Template** when creating your PR.
+              This PR contains frontend changes. The **Smart Template** is already loaded with frontend sections.
               
-              **Template Location:** \`.github/PULL_REQUEST_TEMPLATE/frontend.md\`
+              **What to do:**
+              - Fill out the "🎨 Frontend Changes" section
+              - Delete the "⚙️ Backend Changes" section if not needed
+              - Complete the testing checklist
               
-              **Features:**
+              **Frontend Features:**
               - UI/UX specific checkboxes
               - Browser compatibility testing
               - Responsive design checks
-              - Frontend testing requirements`;
+              - Screenshot requirements`;
             } else if (template === 'backend') {
-              message = `⚙️ **Backend PR Detected!**
+              message = `⚙️ **Backend Changes Detected!**
               
-              This PR contains backend changes. Please use the **Backend PR Template** when creating your PR.
+              This PR contains backend changes. The **Smart Template** is already loaded with backend sections.
               
-              **Template Location:** \`.github/PULL_REQUEST_TEMPLATE/backend.md\`
+              **What to do:**
+              - Fill out the "⚙️ Backend Changes" section
+              - Delete the "🎨 Frontend Changes" section if not needed
+              - Complete the testing checklist
               
-              **Features:**
+              **Backend Features:**
               - Database change tracking
               - API documentation requirements
               - Security checklist
               - Performance considerations`;
             } else {
-              message = `📝 **General PR**
+              message = `📝 **Mixed Changes Detected!**
               
-              This PR contains mixed or general changes. You can use any template that fits your needs.`;
+              This PR contains both frontend and backend changes. The **Smart Template** includes both sections.
+              
+              **What to do:**
+              - Fill out both "🎨 Frontend Changes" and "⚙️ Backend Changes" sections
+              - Complete the testing checklist
+              - Delete any sections that don't apply`;
             }
             
             github.rest.issues.createComment({
