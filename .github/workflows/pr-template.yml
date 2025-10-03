@@ -5,8 +5,10 @@ on:
     types: [opened, edited]
 
 permissions:
+  contents: read
   issues: write
   pull-requests: write
+  actions: read
 
 jobs:
   template-selector:
@@ -214,18 +216,48 @@ jobs:
               - Fill out the sections that apply to your changes`;
             }
             
-            // Update PR description
-            await github.rest.pulls.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number,
-              body: newDescription
-            });
-            
-            // Add comment
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: message
-            });
+            try {
+              // Update PR description
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.issue.number,
+                body: newDescription
+              });
+              
+              console.log('✅ PR description updated successfully');
+              
+              // Add comment
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: message
+              });
+              
+              console.log('✅ Comment added successfully');
+              
+            } catch (error) {
+              console.error('❌ Error updating PR:', error);
+              
+              // Try to add a comment about the error
+              try {
+                await github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: `⚠️ **Template Update Failed**
+                  
+                  There was an issue updating the PR template automatically. Please manually select the appropriate template:
+                  
+                  - For frontend changes: Use the Frontend template
+                  - For backend changes: Use the Backend template
+                  
+                  Error: ${error.message}`
+                });
+              } catch (commentError) {
+                console.error('❌ Error adding comment:', commentError);
+              }
+              
+              throw error;
+            }
