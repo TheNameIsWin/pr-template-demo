@@ -37,4 +37,4 @@ Brief description of the frontend changes in this PR.
 Closes #(issue number)
 
 ## 📝 Additional Notes
-Any additional information or context about this PR.
+Any additional information or context about this Pull Request.
