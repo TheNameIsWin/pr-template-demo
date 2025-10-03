@@ -5,8 +5,10 @@ on:
     types: [opened, edited]
 
 permissions:
+  contents: read
   issues: write
   pull-requests: write
+  actions: read
 
 jobs:
   template-selector:
@@ -93,9 +95,17 @@ jobs:
               - Delete any sections that don't apply`;
             }
             
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: message
-            });
+            try {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: message
+              });
+              console.log('✅ Comment added successfully');
+            } catch (error) {
+              console.error('❌ Error adding comment:', error);
+              console.log('Template detected:', template);
+              console.log('Message:', message);
+              throw error;
+            }
