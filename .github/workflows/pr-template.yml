@@ -45,55 +45,217 @@ jobs:
             echo "📝 Using default template"
           fi
 
-      - name: Comment on PR
+      - name: Update PR Description
         uses: actions/github-script@v7
         with:
           script: |
             const template = '${{ steps.template.outputs.template }}';
+            
+            // Get current PR
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            
+            let newDescription = '';
             let message = '';
             
             if (template === 'frontend') {
-              message = `🎨 **Frontend Changes Detected!**
+              newDescription = `# 🎨 Frontend Pull Request
+
+## 📋 Description
+Brief description of the frontend changes in this PR.
+
+---
+
+## 🎯 Type of Change
+- [ ] 🐛 Bug fix
+- [ ] ✨ New feature
+- [ ] 💄 UI/UX improvement
+- [ ] 🔧 Refactoring
+- [ ] 📱 Responsive design
+- [ ] ⚡ Performance optimization
+- [ ] 🧪 Testing
+
+## 🖼️ UI Changes
+- [ ] Screenshots added
+- [ ] Mobile responsive
+- [ ] Cross-browser tested
+- [ ] Accessibility checked
+
+## 📱 Browser Support
+- [ ] Chrome
+- [ ] Firefox
+- [ ] Safari
+- [ ] Edge
+
+## 📸 Screenshots
+<!-- Add screenshots here if applicable -->
+
+## 🧪 Testing
+- [ ] Unit tests added/updated
+- [ ] Integration tests added/updated
+- [ ] Manual testing completed
+- [ ] Browser compatibility tested
+
+## 🔗 Related Issues
+Closes #(issue number)
+
+## 📝 Additional Notes
+Any additional information or context about this PR.`;
               
-              This PR contains frontend changes. The **Smart Template** is already loaded with frontend sections.
+              message = `🎨 **Frontend Template Applied!**
               
-              **What to do:**
-              - Fill out the "🎨 Frontend Changes" section
-              - Delete the "⚙️ Backend Changes" section if not needed
-              - Complete the testing checklist
+              Your PR description has been automatically updated with the **Frontend Template**.
               
-              **Frontend Features:**
-              - UI/UX specific checkboxes
+              **What's included:**
+              - Frontend-specific checkboxes
+              - UI/UX requirements
               - Browser compatibility testing
-              - Responsive design checks
               - Screenshot requirements`;
+              
             } else if (template === 'backend') {
-              message = `⚙️ **Backend Changes Detected!**
+              newDescription = `# ⚙️ Backend Pull Request
+
+## 📋 Description
+Brief description of the backend changes in this PR.
+
+---
+
+## 🎯 Type of Change
+- [ ] 🐛 Bug fix
+- [ ] ✨ New feature
+- [ ] 🔧 Refactoring
+- [ ] ⚡ Performance optimization
+- [ ] 🔒 Security improvement
+- [ ] 📊 Database changes
+- [ ] 🔌 API changes
+- [ ] 🧪 Testing
+
+## 🗄️ Database Changes
+- [ ] Migration files added
+- [ ] Database schema updated
+- [ ] Data migration required
+- [ ] Rollback plan documented
+
+## 🔌 API Changes
+- [ ] New endpoints added
+- [ ] Existing endpoints modified
+- [ ] API documentation updated
+- [ ] Breaking changes documented
+
+## 🔒 Security
+- [ ] Input validation added
+- [ ] Authentication/Authorization checked
+- [ ] SQL injection prevention
+- [ ] XSS prevention
+
+## 📊 Performance
+- [ ] Database queries optimized
+- [ ] Caching implemented
+- [ ] Memory usage checked
+- [ ] Response time improved
+
+## 🧪 Testing
+- [ ] Unit tests added/updated
+- [ ] Integration tests added/updated
+- [ ] API tests added/updated
+- [ ] Load testing completed
+
+## 🔗 Related Issues
+Closes #(issue number)
+
+## 📝 Additional Notes
+Any additional information or context about this PR.`;
               
-              This PR contains backend changes. The **Smart Template** is already loaded with backend sections.
+              message = `⚙️ **Backend Template Applied!**
               
-              **What to do:**
-              - Fill out the "⚙️ Backend Changes" section
-              - Delete the "🎨 Frontend Changes" section if not needed
-              - Complete the testing checklist
+              Your PR description has been automatically updated with the **Backend Template**.
               
-              **Backend Features:**
+              **What's included:**
+              - Backend-specific checkboxes
               - Database change tracking
               - API documentation requirements
-              - Security checklist
-              - Performance considerations`;
+              - Security checklist`;
+              
             } else {
-              message = `📝 **Mixed Changes Detected!**
+              newDescription = `# 🚀 Mixed Changes Pull Request
+
+## 📋 Description
+Brief description of the changes in this PR.
+
+---
+
+## 🎨 Frontend Changes
+*Fill this section if you have frontend changes*
+
+### 🎯 Type of Change
+- [ ] 🐛 Bug fix
+- [ ] ✨ New feature
+- [ ] 💄 UI/UX improvement
+- [ ] 🔧 Refactoring
+- [ ] 📱 Responsive design
+- [ ] ⚡ Performance optimization
+
+### 🖼️ UI Changes
+- [ ] Screenshots added
+- [ ] Mobile responsive
+- [ ] Cross-browser tested
+- [ ] Accessibility checked
+
+---
+
+## ⚙️ Backend Changes
+*Fill this section if you have backend changes*
+
+### 🎯 Type of Change
+- [ ] 🐛 Bug fix
+- [ ] ✨ New feature
+- [ ] 🔧 Refactoring
+- [ ] ⚡ Performance optimization
+- [ ] 🔒 Security improvement
+- [ ] 📊 Database changes
+- [ ] 🔌 API changes
+
+### 🗄️ Database Changes
+- [ ] Migration files added
+- [ ] Database schema updated
+- [ ] Data migration required
+- [ ] Rollback plan documented
+
+---
+
+## 🧪 Testing
+- [ ] Unit tests added/updated
+- [ ] Integration tests added/updated
+- [ ] Manual testing completed
+
+## 🔗 Related Issues
+Closes #(issue number)
+
+## 📝 Additional Notes
+Any additional information or context about this PR.`;
               
-              This PR contains both frontend and backend changes. The **Smart Template** includes both sections.
+              message = `📝 **Mixed Template Applied!**
               
-              **What to do:**
-              - Fill out both "🎨 Frontend Changes" and "⚙️ Backend Changes" sections
-              - Complete the testing checklist
-              - Delete any sections that don't apply`;
+              Your PR description has been automatically updated with the **Mixed Template**.
+              
+              **What's included:**
+              - Both frontend and backend sections
+              - Fill out the sections that apply to your changes`;
             }
             
-            github.rest.issues.createComment({
+            // Update PR description
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              body: newDescription
+            });
+            
+            // Add comment
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
