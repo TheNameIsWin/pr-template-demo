@@ -62,48 +62,39 @@ jobs:
             let message = '';
             
             if (template === 'frontend') {
-              newDescription = `# 🎨 Frontend Pull Request
-
-## 📋 Description
-Brief description of the frontend changes in this PR.
-
----
-
-## 🎯 Type of Change
-- [ ] 🐛 Bug fix
-- [ ] ✨ New feature
-- [ ] 💄 UI/UX improvement
-- [ ] 🔧 Refactoring
-- [ ] 📱 Responsive design
-- [ ] ⚡ Performance optimization
-- [ ] 🧪 Testing
-
-## 🖼️ UI Changes
-- [ ] Screenshots added
-- [ ] Mobile responsive
-- [ ] Cross-browser tested
-- [ ] Accessibility checked
-
-## 📱 Browser Support
-- [ ] Chrome
-- [ ] Firefox
-- [ ] Safari
-- [ ] Edge
-
-## 📸 Screenshots
-<!-- Add screenshots here if applicable -->
-
-## 🧪 Testing
-- [ ] Unit tests added/updated
-- [ ] Integration tests added/updated
-- [ ] Manual testing completed
-- [ ] Browser compatibility tested
-
-## 🔗 Related Issues
-Closes #(issue number)
-
-## 📝 Additional Notes
-Any additional information or context about this PR.`;
+              newDescription = '# 🎨 Frontend Pull Request\n\n' +
+                '## 📋 Description\n' +
+                'Brief description of the frontend changes in this PR.\n\n' +
+                '---\n\n' +
+                '## 🎯 Type of Change\n' +
+                '- [ ] 🐛 Bug fix\n' +
+                '- [ ] ✨ New feature\n' +
+                '- [ ] 💄 UI/UX improvement\n' +
+                '- [ ] 🔧 Refactoring\n' +
+                '- [ ] 📱 Responsive design\n' +
+                '- [ ] ⚡ Performance optimization\n' +
+                '- [ ] 🧪 Testing\n\n' +
+                '## 🖼️ UI Changes\n' +
+                '- [ ] Screenshots added\n' +
+                '- [ ] Mobile responsive\n' +
+                '- [ ] Cross-browser tested\n' +
+                '- [ ] Accessibility checked\n\n' +
+                '## 📱 Browser Support\n' +
+                '- [ ] Chrome\n' +
+                '- [ ] Firefox\n' +
+                '- [ ] Safari\n' +
+                '- [ ] Edge\n\n' +
+                '## 📸 Screenshots\n' +
+                '<!-- Add screenshots here if applicable -->\n\n' +
+                '## 🧪 Testing\n' +
+                '- [ ] Unit tests added/updated\n' +
+                '- [ ] Integration tests added/updated\n' +
+                '- [ ] Manual testing completed\n' +
+                '- [ ] Browser compatibility tested\n\n' +
+                '## 🔗 Related Issues\n' +
+                'Closes #(issue number)\n\n' +
+                '## 📝 Additional Notes\n' +
+                'Any additional information or context about this PR.';
               
               message = `🎨 **Frontend Template Applied!**
               
@@ -116,58 +107,48 @@ Any additional information or context about this PR.`;
               - Screenshot requirements`;
               
             } else if (template === 'backend') {
-              newDescription = `# ⚙️ Backend Pull Request
-
-## 📋 Description
-Brief description of the backend changes in this PR.
-
----
-
-## 🎯 Type of Change
-- [ ] 🐛 Bug fix
-- [ ] ✨ New feature
-- [ ] 🔧 Refactoring
-- [ ] ⚡ Performance optimization
-- [ ] 🔒 Security improvement
-- [ ] 📊 Database changes
-- [ ] 🔌 API changes
-- [ ] 🧪 Testing
-
-## 🗄️ Database Changes
-- [ ] Migration files added
-- [ ] Database schema updated
-- [ ] Data migration required
-- [ ] Rollback plan documented
-
-## 🔌 API Changes
-- [ ] New endpoints added
-- [ ] Existing endpoints modified
-- [ ] API documentation updated
-- [ ] Breaking changes documented
-
-## 🔒 Security
-- [ ] Input validation added
-- [ ] Authentication/Authorization checked
-- [ ] SQL injection prevention
-- [ ] XSS prevention
-
-## 📊 Performance
-- [ ] Database queries optimized
-- [ ] Caching implemented
-- [ ] Memory usage checked
-- [ ] Response time improved
-
-## 🧪 Testing
-- [ ] Unit tests added/updated
-- [ ] Integration tests added/updated
-- [ ] API tests added/updated
-- [ ] Load testing completed
-
-## 🔗 Related Issues
-Closes #(issue number)
-
-## 📝 Additional Notes
-Any additional information or context about this PR.`;
+              newDescription = '# ⚙️ Backend Pull Request\n\n' +
+                '## 📋 Description\n' +
+                'Brief description of the backend changes in this PR.\n\n' +
+                '---\n\n' +
+                '## 🎯 Type of Change\n' +
+                '- [ ] 🐛 Bug fix\n' +
+                '- [ ] ✨ New feature\n' +
+                '- [ ] 🔧 Refactoring\n' +
+                '- [ ] ⚡ Performance optimization\n' +
+                '- [ ] 🔒 Security improvement\n' +
+                '- [ ] 📊 Database changes\n' +
+                '- [ ] 🔌 API changes\n' +
+                '- [ ] 🧪 Testing\n\n' +
+                '## 🗄️ Database Changes\n' +
+                '- [ ] Migration files added\n' +
+                '- [ ] Database schema updated\n' +
+                '- [ ] Data migration required\n' +
+                '- [ ] Rollback plan documented\n\n' +
+                '## 🔌 API Changes\n' +
+                '- [ ] New endpoints added\n' +
+                '- [ ] Existing endpoints modified\n' +
+                '- [ ] API documentation updated\n' +
+                '- [ ] Breaking changes documented\n\n' +
+                '## 🔒 Security\n' +
+                '- [ ] Input validation added\n' +
+                '- [ ] Authentication/Authorization checked\n' +
+                '- [ ] SQL injection prevention\n' +
+                '- [ ] XSS prevention\n\n' +
+                '## 📊 Performance\n' +
+                '- [ ] Database queries optimized\n' +
+                '- [ ] Caching implemented\n' +
+                '- [ ] Memory usage checked\n' +
+                '- [ ] Response time improved\n\n' +
+                '## 🧪 Testing\n' +
+                '- [ ] Unit tests added/updated\n' +
+                '- [ ] Integration tests added/updated\n' +
+                '- [ ] API tests added/updated\n' +
+                '- [ ] Load testing completed\n\n' +
+                '## 🔗 Related Issues\n' +
+                'Closes #(issue number)\n\n' +
+                '## 📝 Additional Notes\n' +
+                'Any additional information or context about this PR.';
               
               message = `⚙️ **Backend Template Applied!**
               
@@ -180,62 +161,49 @@ Any additional information or context about this PR.`;
               - Security checklist`;
               
             } else {
-              newDescription = `# 🚀 Mixed Changes Pull Request
-
-## 📋 Description
-Brief description of the changes in this PR.
-
----
-
-## 🎨 Frontend Changes
-*Fill this section if you have frontend changes*
-
-### 🎯 Type of Change
-- [ ] 🐛 Bug fix
-- [ ] ✨ New feature
-- [ ] 💄 UI/UX improvement
-- [ ] 🔧 Refactoring
-- [ ] 📱 Responsive design
-- [ ] ⚡ Performance optimization
-
-### 🖼️ UI Changes
-- [ ] Screenshots added
-- [ ] Mobile responsive
-- [ ] Cross-browser tested
-- [ ] Accessibility checked
-
----
-
-## ⚙️ Backend Changes
-*Fill this section if you have backend changes*
-
-### 🎯 Type of Change
-- [ ] 🐛 Bug fix
-- [ ] ✨ New feature
-- [ ] 🔧 Refactoring
-- [ ] ⚡ Performance optimization
-- [ ] 🔒 Security improvement
-- [ ] 📊 Database changes
-- [ ] 🔌 API changes
-
-### 🗄️ Database Changes
-- [ ] Migration files added
-- [ ] Database schema updated
-- [ ] Data migration required
-- [ ] Rollback plan documented
-
----
-
-## 🧪 Testing
-- [ ] Unit tests added/updated
-- [ ] Integration tests added/updated
-- [ ] Manual testing completed
-
-## 🔗 Related Issues
-Closes #(issue number)
-
-## 📝 Additional Notes
-Any additional information or context about this PR.`;
+              newDescription = '# 🚀 Mixed Changes Pull Request\n\n' +
+                '## 📋 Description\n' +
+                'Brief description of the changes in this PR.\n\n' +
+                '---\n\n' +
+                '## 🎨 Frontend Changes\n' +
+                '*Fill this section if you have frontend changes*\n\n' +
+                '### 🎯 Type of Change\n' +
+                '- [ ] 🐛 Bug fix\n' +
+                '- [ ] ✨ New feature\n' +
+                '- [ ] 💄 UI/UX improvement\n' +
+                '- [ ] 🔧 Refactoring\n' +
+                '- [ ] 📱 Responsive design\n' +
+                '- [ ] ⚡ Performance optimization\n\n' +
+                '### 🖼️ UI Changes\n' +
+                '- [ ] Screenshots added\n' +
+                '- [ ] Mobile responsive\n' +
+                '- [ ] Cross-browser tested\n' +
+                '- [ ] Accessibility checked\n\n' +
+                '---\n\n' +
+                '## ⚙️ Backend Changes\n' +
+                '*Fill this section if you have backend changes*\n\n' +
+                '### 🎯 Type of Change\n' +
+                '- [ ] 🐛 Bug fix\n' +
+                '- [ ] ✨ New feature\n' +
+                '- [ ] 🔧 Refactoring\n' +
+                '- [ ] ⚡ Performance optimization\n' +
+                '- [ ] 🔒 Security improvement\n' +
+                '- [ ] 📊 Database changes\n' +
+                '- [ ] 🔌 API changes\n\n' +
+                '### 🗄️ Database Changes\n' +
+                '- [ ] Migration files added\n' +
+                '- [ ] Database schema updated\n' +
+                '- [ ] Data migration required\n' +
+                '- [ ] Rollback plan documented\n\n' +
+                '---\n\n' +
+                '## 🧪 Testing\n' +
+                '- [ ] Unit tests added/updated\n' +
+                '- [ ] Integration tests added/updated\n' +
+                '- [ ] Manual testing completed\n\n' +
+                '## 🔗 Related Issues\n' +
+                'Closes #(issue number)\n\n' +
+                '## 📝 Additional Notes\n' +
+                'Any additional information or context about this PR.';
               
               message = `📝 **Mixed Template Applied!**
               
